@@ -30,14 +30,14 @@ pub fn init<R: Runtime>(f: Box<SingleInstanceCallback<R>>) -> TauriPlugin<R> {
     plugin::Builder::new("single-instance")
         .setup(|app| {
             let app_name = &app.package_info().name;
-            let class_name = format!("{}-single-instance-class", app_name);
-            let window_name = format!("{}-single-instance-window", app_name);
+            let class_name = format!("{}-single-instance-class\0", app_name);
+            let window_name = format!("{}-single-instance-window\0", app_name);
 
             let hmutex = unsafe {
                 CreateMutexW(
                     std::ptr::null(),
                     true.into(),
-                    encode_wide("tauri-plugin-single-instance-mutex").as_ptr(),
+                    encode_wide("tauri-plugin-single-instance-mutex\0").as_ptr(),
                 )
             };
 
